@@ -1,3 +1,11 @@
+/*
+ * @Description: 
+ * @Version: 2.0
+ * @Autor: zhanggl
+ * @Date: 2021-07-08 11:27:45
+ * @LastEditors: zhanggl
+ * @LastEditTime: 2021-07-13 09:46:58
+ */
 import express, { request, Request, Response } from 'express';
 import { cryPassword } from '../utils/cryptoUtil';
 import { formatDateHour24 } from '../utils/util';
@@ -17,7 +25,7 @@ router.post('/signup', async (req: Request, res: Response) => {
     try {
         result = await isUserExist(req); // 判断用户是否重复
         if (!result.isOk) {
-            res.status(400).send(result);
+            res.status(422).send(result);
         } else {
             if (result.isOk) {
                 result = await createUser(req) // 创建用户
@@ -80,7 +88,7 @@ const createUser = async (req: Request,) => {
             result.isOk = false;
             result.message = 'Create user in db failed.';
         } else {
-            result.data = { id: data.insertId };
+            result.data = { id: data.insertId, username: req.body.username };
         }
     } catch (error) {
         result.isOk = false;
