@@ -4,9 +4,9 @@
  * @Autor: zhanggl
  * @Date: 2021-07-08 11:27:45
  * @LastEditors: zhanggl
- * @LastEditTime: 2021-07-13 09:46:58
+ * @LastEditTime: 2021-07-14 11:19:44
  */
-import express, { request, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import { cryPassword } from '../utils/cryptoUtil';
 import { formatDateHour24 } from '../utils/util';
 import { createToken } from '../utils/jwtUtil';
