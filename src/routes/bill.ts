@@ -60,8 +60,6 @@ router.post('/search', async (req: Request, res: Response) => {
  */
 router.post('/edit', async (req: Request, res: Response) => {
     const result = new ResponResult(res.locals);
-    // const sql = `UPDATE FROM bill (carId, date, billType, payType, actual, discount, unitPrice, place, note, userId)
-    // VALUES (?,?,?,?,?,?,?,?,?,?) WHERE id = ?`;
     const sql = `UPDATE bill SET carId = ?, date = ?, billType = ?, payType = ?, actual = ?, 
     discount = ?, unitPrice = ?, place = ?, note = ?, userId = ?
     WHERE id = ?`;
