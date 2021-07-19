@@ -4,7 +4,7 @@
  * @Autor: zhanggl
  * @Date: 2021-07-16 14:12:09
  * @LastEditors: zhanggl
- * @LastEditTime: 2021-07-16 17:42:40
+ * @LastEditTime: 2021-07-19 17:42:41
  */
 import express, { Request, Response } from 'express'
 import mySqlOperate from '../db/mysqlOperate';
@@ -20,20 +20,22 @@ router.post('/create', async (req: Request, res: Response) => {
     try {
         const maxSort = await getMaxSort(result);
         if (result.isOk) {
-            const sql: string = `INSERT INTO billtype (id,type,sort,note) VALULES (?,?,?,?)`;
-            const paramList = [null, type, maxSort, note];
-            const data:any = await mySqlOperate.query(sql,paramList);
-            if(!data.affectedRows){
+            const sql: string = `INSERT INTO billtype (id,type,sort,note) VALUES (?,?,?,?)`;
+            const paramList = [null, type, maxSort + 1, note];
+            const data: any = await mySqlOperate.query(sql, paramList);
+            if (!data.affectedRows) {
                 resCode = 400;
                 result.isOk = false;
-                result.message = 'Create billtype failed.';
+                result.message = 'There is no rows affected.';
             }
         } else {
             resCode = 400;
         }
     } catch (error) {
         resCode = 400;
+        result.isOk = false;
         result.error = error;
+        result.message = 'Create billtype failed.';
     } finally {
         res.status(resCode).send(result);
     }
@@ -41,18 +43,18 @@ router.post('/create', async (req: Request, res: Response) => {
 
 // 获取排序的最大序号
 const getMaxSort = async (result: ResponResult) => {
-    let sort = 0;
-    const sql = `SELECT MAX(sort) FROM billtype`;
+    let sort = null;
+    const sql = `SELECT MAX(sort) AS maxsort FROM billtype`;
     try {
         const data = await mySqlOperate.query(sql, []);
         if (data.length) {
-            console.log('data0: ', data[0]);
-            sort = data[0];
+            sort = data[0].maxsort ? data[0].maxsort : 0;
         }
         result.isOk = true;
     } catch (error) {
         result.isOk = false;
         result.error = error;
+        result.message = 'Get max sort failed.';
     } finally {
         return sort;
     }
