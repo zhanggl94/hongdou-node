@@ -4,17 +4,19 @@
  * @Autor: zhanggl
  * @Date: 2021-07-14 11:15:59
  * @LastEditors: zhanggl
- * @LastEditTime: 2021-07-15 17:23:21
+ * @LastEditTime: 2021-07-20 15:38:16
  */
 import express, { Request, Response } from 'express';
 import mySqlOperate from '../db/mysqlOperate';
 import ResponResult from '../module/ResponResult';
+import constants from '../utils/constants';
 import { cryPassword } from '../utils/cryptoUtil';
+import { formatDateHour24 } from '../utils/util';
 
 const router = express.Router();
 
 // 更新用户信息
-router.post('/edit', async (req: Request, res: Response) => {
+router.put('/edit', async (req: Request, res: Response) => {
   let result: ResponResult = new ResponResult(res.locals);
   let resCode = 200;
   try {
@@ -26,11 +28,11 @@ router.post('/edit', async (req: Request, res: Response) => {
       const dbUsername = data[0].username;
       const dbPassword = data[0].password;
       const dbCreatetime = data[0].createtime;
-      const cryPwd = cryPassword(oldPassword, dbCreatetime);
+      const cryPwd = cryPassword(oldPassword, formatDateHour24(new Date(dbCreatetime), constants.time_zone_zh_cn));
       console.log(`oldPassword: ${oldPassword}, cryPwd: ${cryPwd}`)
       console.log('dbPassword ', dbPassword)
       if (cryPwd === dbPassword) {
-        const newCryPwd = cryPassword(newPassword, dbCreatetime);
+        const newCryPwd = cryPassword(newPassword, formatDateHour24(new Date(dbCreatetime), constants.time_zone_zh_cn));
         const editParamList = [newCryPwd, id];
         result = await editUser(res, editParamList)
       } else {

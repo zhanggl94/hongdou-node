@@ -4,7 +4,7 @@
  * @Autor: zhanggl
  * @Date: 2021-07-16 14:12:09
  * @LastEditors: zhanggl
- * @LastEditTime: 2021-07-19 17:42:41
+ * @LastEditTime: 2021-07-20 17:34:24
  */
 import express, { Request, Response } from 'express'
 import mySqlOperate from '../db/mysqlOperate';
@@ -59,5 +59,26 @@ const getMaxSort = async (result: ResponResult) => {
         return sort;
     }
 }
+
+// 查询账单类型
+router.get('/select', async (req: Request, res: Response) => {
+    const result = new ResponResult(res.locals);
+    result.data = [];
+    let resCode = 200;
+    const sql = `SELECT * FROM billtype`;
+    const paramList: Array<string> = [];
+    try {
+        const data = await mySqlOperate.query(sql, paramList);
+        if (data.length) {
+            result.data = data;
+        }
+    } catch (error) {
+        resCode = 400;
+        result.error = error;
+        result.message = 'Select billtype failed.';
+    }
+    res.status(resCode).send(result);
+})
+
 
 export default router;

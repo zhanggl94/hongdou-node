@@ -4,7 +4,7 @@
  * @Autor: zhanggl
  * @Date: 2021-07-08 11:27:45
  * @LastEditors: zhanggl
- * @LastEditTime: 2021-07-20 09:13:52
+ * @LastEditTime: 2021-07-20 17:34:46
  */
 import express, { Request } from 'express';
 import mySqlOperate from '../db/mysqlOperate';
