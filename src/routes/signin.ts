@@ -4,7 +4,7 @@
  * @Autor: zhanggl
  * @Date: 2021-07-08 11:27:45
  * @LastEditors: zhanggl
- * @LastEditTime: 2021-07-09 15:09:00
+ * @LastEditTime: 2021-07-20 09:13:52
  */
 import express, { Request } from 'express';
 import mySqlOperate from '../db/mysqlOperate';
@@ -41,7 +41,7 @@ const isUserExist = async (req: Request) => {
     const data: any = await mySqlOperate.query(sql, paramList);
     if (data.length) {
       const { id, password, createtime } = data[0];
-      if (password === cryPassword(req.body.password, formatDateHour24(createtime, constants.time_zone_zh_cn))) {
+      if (password === cryPassword(req.body.password, formatDateHour24(new Date(createtime), constants.time_zone_zh_cn))) {
         result.isOk = true;
         result.jwtToken = createToken({ username: req.body.username, userid: id });
         const updateSql = `UPDATE user SET lastlogintime = ? where id = ?`;

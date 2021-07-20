@@ -4,7 +4,7 @@
  * @Autor: zhanggl
  * @Date: 2021-07-08 11:27:45
  * @LastEditors: zhanggl
- * @LastEditTime: 2021-07-14 11:19:44
+ * @LastEditTime: 2021-07-20 09:14:45
  */
 import express, { Request, Response } from 'express';
 import { cryPassword } from '../utils/cryptoUtil';
@@ -77,7 +77,6 @@ const isUserExist = async (req: Request) => {
 const createUser = async (req: Request,) => {
   const result = new ResponResult(notRefreshToken);
   const currentDateTime = formatDateHour24(new Date(), constants.time_zone_zh_cn);
-  console.log('curr', currentDateTime);
   const sql = `INSERT INTO user VALUES (null,?,?,?,?)`;
   const cryPwd = cryPassword(req.body.password, currentDateTime);
   const paramList = [req.body.username, cryPwd, currentDateTime, currentDateTime];
