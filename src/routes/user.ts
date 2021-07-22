@@ -29,8 +29,6 @@ router.put('/edit', async (req: Request, res: Response) => {
       const dbPassword = data[0].password;
       const dbCreatetime = data[0].createtime;
       const cryPwd = cryPassword(oldPassword, formatDateHour24(new Date(dbCreatetime), constants.time_zone_zh_cn));
-      console.log(`oldPassword: ${oldPassword}, cryPwd: ${cryPwd}`)
-      console.log('dbPassword ', dbPassword)
       if (cryPwd === dbPassword) {
         const newCryPwd = cryPassword(newPassword, formatDateHour24(new Date(dbCreatetime), constants.time_zone_zh_cn));
         const editParamList = [newCryPwd, id];

@@ -82,7 +82,6 @@ const createUser = async (req: Request,) => {
   const paramList = [req.body.username, cryPwd, currentDateTime, currentDateTime];
   try {
     const data: any = await mySqlOperate.query(sql, paramList)
-    console.log('data', data)
     if (!data.affectedRows) {
       result.isOk = false;
       result.message = 'Create user in db failed.';

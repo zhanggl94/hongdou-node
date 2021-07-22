@@ -61,7 +61,6 @@ const isUserExist = async (req: Request) => {
     result.error = error;
     result.message = 'There has some errors when query user.';
   }
-  console.log('result', result)
   return result;
 }
 

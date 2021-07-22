@@ -1,3 +1,11 @@
+/*
+ * @Description: 
+ * @Version: 2.0
+ * @Autor: zhanggl
+ * @Date: 2021-07-08 11:27:45
+ * @LastEditors: zhanggl
+ * @LastEditTime: 2021-07-22 16:14:55
+ */
 import mysql from 'mysql';
 import mysqlConfig from '../config/mysql';
 
@@ -12,7 +20,7 @@ mySqlOperate.query = (sql: string, paramList: Array<any>): Promise<any> => {
                 reject(err);
             } else {
                 connection.query(sql, paramList, (err, data) => {
-                    // console.log(`sql: ${sql}, paramList: ${paramList}`); 查看执行的SQL语句
+                    console.log(`sql: ${sql}, paramList: ${paramList}`); //查看执行的SQL语句
                     if (err) {
                         reject(err);
                     } else {

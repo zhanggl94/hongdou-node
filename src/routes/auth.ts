@@ -12,7 +12,6 @@ import constants from '../utils/constants';
 import { constant } from 'lodash';
 
 const auth = async (req: Request, res: Response, next: Function) => {
-    console.log('req.url', req.url)
     if (req.url !== '/api/signin' && req.url !== '/api/signup') {
         const token: string = req.headers.jwttoken as string;
         try {
