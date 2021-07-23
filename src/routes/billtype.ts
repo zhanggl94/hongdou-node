@@ -4,7 +4,7 @@
  * @Autor: zhanggl
  * @Date: 2021-07-16 14:12:09
  * @LastEditors: zhanggl
- * @LastEditTime: 2021-07-22 17:48:30
+ * @LastEditTime: 2021-07-23 10:36:53
  */
 import express, { Request, Response } from 'express'
 import mySqlOperate from '../db/mysqlOperate';
@@ -100,9 +100,20 @@ router.delete('/delete', async (req: Request, res: Response) => {
     const { idList } = req.body;
     try {
         if (idList.length) {
-            const sql: string = `DELETE FROM billtype WHERE id IN (?) `;
-            const paramList: Array<number> = idList
+            let ids = idList.toString();
+            let sql: string = `DELETE FROM billtype WHERE id IN (`;
+            for (let i = 0; i < idList.length; i++) {
+                if (i === 0) {
+                    sql += '?';
+                } else {
+                    sql += ',?'
+                }
+            }
+            sql += `)`;
+            const paramList: Array<number> = idList;
             const data = await mySqlOperate.query(sql, paramList);
+            console.log('paramList:', typeof (paramList[0]))
+            console.log('data:', data)
             if (!data.affectedRows) {
                 resCode = 400;
                 result.isOk = false;
@@ -123,7 +134,6 @@ router.delete('/delete', async (req: Request, res: Response) => {
     }
 })
 
-
 // 获取排序的最大序号
 const getMaxSort = async (result: ResponResult) => {
     let sort = null;
@@ -142,10 +152,4 @@ const getMaxSort = async (result: ResponResult) => {
         return sort;
     }
 }
-
-
-// const selectBillType = async(result:ResponResult)=>{
-
-// }
-
 export default router;
