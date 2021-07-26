@@ -24,21 +24,20 @@ router.post('/signup', async (req: Request, res: Response) => {
   let result: ResponResult = new ResponResult(notRefreshToken);
   try {
     result = await isUserExist(req); // 判断用户是否重复
-    if (!result.isOk) {
+    if (!result.code) {
       res.status(422).send(result);
     } else {
-      if (result.isOk) {
+      if (result.code) {
         result = await createUser(req) // 创建用户
-        let httpCode = 400;
-        if (result.isOk) {
-          httpCode = 200;
+        if (result.code) {
+          result.status = 200;
           result.jwtToken = createToken({ username: req.body.username, userId: result.data.userId });
         }
-        res.status(httpCode).send(result);
+        res.status(result.status).send(result);
       }
     }
   } catch (error) {
-    res.status(400).send({ isOk: false, error, message: 'There has some system error.' });
+    res.status(400).send({ code: false, error, message: 'There has some system error.' });
   }
 });
 
@@ -55,12 +54,12 @@ const isUserExist = async (req: Request) => {
   try {
     const data: any = await mySqlOperate.query(sql, paramList)
     if (data.length) {
-      result.isOk = false;
+      result.code = 0;
       result.message = 'The user has regisited.';
     }
   } catch (error: any) {
     console.log(`Query user error.${error}`);
-    result.isOk = false;
+    result.code = 0;
     result.error = error;
     result.message = 'Query user error.';
   }
@@ -83,13 +82,13 @@ const createUser = async (req: Request,) => {
   try {
     const data: any = await mySqlOperate.query(sql, paramList)
     if (!data.affectedRows) {
-      result.isOk = false;
+      result.code = 0;
       result.message = 'Create user in db failed.';
     } else {
       result.data = { id: data.insertId, username: req.body.username };
     }
   } catch (error: any) {
-    result.isOk = false;
+    result.code = 0;
     result.error = error;
     result.message = 'Create user in db failed.';
   }

@@ -19,13 +19,13 @@ const router = express.Router();
 router.post('/signin', async (req, res) => {
   try {
     const result = await isUserExist(req);
-    if (result.isOk) {
+    if (result.code) {
       res.send(result);
     } else {
       res.status(401).send(result);
     }
   } catch (error) {
-    res.status(401).send({ isOk: false, error, message: 'There has some system error.' });
+    res.status(401).send({ code: 0, error, message: 'There has some system error.' });
   }
 })
 
@@ -42,22 +42,22 @@ const isUserExist = async (req: Request) => {
     if (data.length) {
       const { id, password, createtime } = data[0];
       if (password === cryPassword(req.body.password, formatDateHour24(new Date(createtime), constants.time_zone_zh_cn))) {
-        result.isOk = true;
+        result.code = 1;
         result.jwtToken = createToken({ username: req.body.username, userid: id });
         const updateSql = `UPDATE user SET lastlogintime = ? where id = ?`;
         const updateParamList = [formatDateHour24(new Date(), constants.time_zone_zh_cn), id];
         mySqlOperate.query(updateSql, updateParamList);
         result.data = { id: id, username: req.body.username }
       } else {
-        result.isOk = false;
+        result.code = 0;
         result.message = 'Username or password is not corrected.';
       }
     } else {
-      result.isOk = false;
+      result.code = 0;
       result.message = 'User not exist.';
     }
   } catch (error: any) {
-    result.isOk = false;
+    result.code = 0;
     result.error = error;
     result.message = 'There has some errors when query user.';
   }

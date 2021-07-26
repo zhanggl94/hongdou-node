@@ -17,15 +17,14 @@ router.post('/create', async (req: Request, res: Response) => {
             await setIsDefault(req.body.userId);
         }
         const data: any = await mySqlOperate.query(sql, paramList);
-        let resCode = 200;
         if (!data.affectedRows) {
-            result.isOk = false;
+            result.code = 0;
             result.message = 'Create car failed.';
-            resCode = 400;
+            result.status = 400;
         }
-        res.status(resCode).send(result);
+        res.status(result.status).send(result);
     } catch (error) {
-        result.isOk = false;
+        result.code = 0;
         result.error = error;
         result.message = 'There is some system errors.';
         res.status(400).send(result);
@@ -48,7 +47,7 @@ router.post('/search', async (req: Request, res: Response) => {
         
         res.send(result);
     } catch (error) {
-        result.isOk = false;
+        result.code = 0;
         result.message = 'There has some system error.';
         result.error = error;
         res.status(400).send(result);
@@ -70,13 +69,13 @@ router.post('/edit', async (req: Request, res: Response) => {
         const data: any = await mySqlOperate.query(sql, paramList);
         let responseCode = 200;
         if (!data.affectedRows) {
-            result.isOk = false;
+            result.code = 0;
             result.message = 'Update car failed.';
             responseCode = 400;
         }
         res.status(responseCode).send(result);
     } catch (error) {
-        result.isOk = false;
+        result.code = 0;
         result.error = error;
         result.message = 'There has some system error.';
     }
@@ -102,15 +101,14 @@ router.post('/delete', async (req: Request, res: Response) => {
     const result = new ResponseResult(res.locals);
     try {
         const data: any = await mySqlOperate.query(sql, paramList);
-        let resCode = 200;
         if (!data.affectedRows) {
-            result.isOk = false;
+            result.code = 0;
             result.message = 'There is no record be deleted. Delete failed.';
-            resCode = 400;
+            result.status = 400;
         }
-        res.status(resCode).send(result);
+        res.status(result.status).send(result);
     } catch (error) {
-        result.isOk = false;
+        result.code = 0;
         result.error = error;
         result.message = 'There has some system erro.';
     }

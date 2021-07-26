@@ -16,21 +16,20 @@ router.post('/create', async (req: Request, res: Response) => {
     const bill: Bill = req.body as Bill;
     const sql: string = INSERT_Bill_SQL + `(?,?,?,?,?,?,?,?,?,?)`;
     const paramList: Array<any> = [bill.carInfo.id, bill.date, bill.billType, bill.payType.toString(), bill.actual, bill.discount, bill.unitPrice, bill.place, bill.note, bill.userId];
-    let resCode = 200;
     try {
         const data: any = await mySqlOperate.query(sql, paramList);
         if (!data.affectedRows) {
-            resCode = 400;
-            result.isOk = false;
+            result.status = 400;
+            result.code = 0;
             result.message = 'Create bill failed.';
         }
     } catch (error) {
-        resCode = 400;
-        result.isOk = false;
+        result.status = 400;
+        result.code = 0;
         result.error = error;
         result.message = 'There has some system errors.';
     }
-    res.status(resCode).send(result);
+    res.status(result.status).send(result);
 });
 
 /**
@@ -42,13 +41,12 @@ router.post('/search', async (req: Request, res: Response) => {
     let sql = `SELECT b.*, c.name AS carName FROM bill b INNER JOIN car c ON c.id = b.carId ${getSplicedSQL(queryObject, ['b'])} `;
     try {
         const data: any = await mySqlOperate.query(sql, queryObject.valueList);
-        let resCode = 200;
         if (data.length) {
             result.data = data;
         }
-        res.status(resCode).send(result);
+        res.status(result.status).send(result);
     } catch (error) {
-        result.isOk = false;
+        result.code = 0;
         result.error = error;
         result.message = 'There has some system error.';
         res.status(400).send(result);
@@ -65,21 +63,20 @@ router.post('/edit', async (req: Request, res: Response) => {
     WHERE id = ?`;
     const bill: Bill = req.body as Bill;
     const paramList: Array<any> = [bill.carInfo.id, bill.date, bill.billType, bill.payType.toString(), bill.actual, bill.discount, bill.unitPrice, bill.place, bill.note, bill.userId, bill.id];
-    let resCode = 200;
     try {
         const data: any = await mySqlOperate.query(sql, paramList);
         if (!data.affectedRows) {
-            resCode = 400;
-            result.isOk = false;
+            result.status = 400;
+            result.code = 0;
             result.message = 'Update bill failed.';
         }
     } catch (error) {
-        resCode = 400;
-        result.isOk = false;
+        result.status = 400;
+        result.code = 0;
         result.error = error;
         result.message = 'There has some system error.';
     } finally {
-        res.status(resCode).send(result);
+        res.status(result.status).send(result);
     }
 });
 
@@ -90,21 +87,20 @@ router.post('/delete', async (req: Request, res: Response) => {
     const result = new ResponResult(res.locals);
     const sql = `DELETE FROM bill WHERE id = ?`;
     const paramList = [req.body.id];
-    let resCode = 200;
     try {
         const data: any = await mySqlOperate.query(sql, paramList);
         if (!data.affectedRows) {
-            resCode = 400;
-            result.isOk = false;
+            result.status = 400;
+            result.code = 0;
             result.message = 'Delete bill failed.';
         }
     } catch (error) {
-        resCode = 400;
-        result.isOk = false;
+        result.status = 400;
+        result.code = 0;
         result.error = error;
         result.message = 'There has some system error.';
     } finally {
-        res.status(resCode).send(result);
+        res.status(result.status).send(result);
     }
 });
 
@@ -131,18 +127,18 @@ router.post('/import', async (req: Request, res: Response) => {
                         car['id'] = newCarData.insertId;
                     }
                 } catch (error) {
-                    result.isOk = false;
+                    result.code = 0;
                     result.message = 'There has some system errors.';
                     result.error = error;
                     // mysql.endmysql();
                 }
             }
         } else {
-            result.isOk = false;
+            result.code = 0;
             result.message = 'The car info is null.';
         }
 
-        if (result.isOk) {
+        if (result.code) {
             let excelInsertSQL = INSERT_Bill_SQL;
             let paramList: Array<any> = [];
             for (let billInfo of req.body) {
@@ -157,21 +153,21 @@ router.post('/import', async (req: Request, res: Response) => {
             try {
                 const data: any = await mySqlOperate.query(excelInsertSQL, paramList);
                 if (!data.affectedRows) {
-                    result.isOk = false;
+                    result.code = 0;
                     result.message = 'Insert bill info failed.';
                 }
             } catch (error) {
-                result.isOk = false;
+                result.code = 0;
                 result.message = 'There has some system errors.';
                 result.error = error;
             }
         }
     } else {
-        result.isOk = false;
+        result.code = 0;
         result.message = 'The body is null.';
     }
-    const resCode: number = result.isOk ? 200 : 400;
-    res.status(resCode).send(result);
+    result.status = result.code ? 200 : 400;
+    res.status(result.status).send(result);
 });
 
 /**

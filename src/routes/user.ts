@@ -4,7 +4,7 @@
  * @Autor: zhanggl
  * @Date: 2021-07-14 11:15:59
  * @LastEditors: zhanggl
- * @LastEditTime: 2021-07-20 15:38:16
+ * @LastEditTime: 2021-07-26 15:55:29
  */
 import express, { Request, Response } from 'express';
 import mySqlOperate from '../db/mysqlOperate';
@@ -18,7 +18,6 @@ const router = express.Router();
 // 更新用户信息
 router.put('/edit', async (req: Request, res: Response) => {
   let result: ResponResult = new ResponResult(res.locals);
-  let resCode = 200;
   try {
     const { id, username, oldPassword, newPassword } = req.body;
     const sql = `select username, password, createtime from user where id=? limit 1`;
@@ -34,33 +33,32 @@ router.put('/edit', async (req: Request, res: Response) => {
         const editParamList = [newCryPwd, id];
         result = await editUser(res, editParamList)
       } else {
-        result.isOk = false;
+        result.code = 0;
         result.message = '原密码不正确';
       }
     }
   } catch (error) {
-    resCode = 400;
-    result.isOk = false;
+    result.status = 400;
+    result.code = 0;
     result.error = error;
     result.message = "Query user error.";
   } finally {
-    res.status(resCode).send(result)
+    res.status(result.status).send(result)
   }
 })
 
 // 更新用户信息
 const editUser = async (res: Response, paramList: Array<string>) => {
   const result: ResponResult = new ResponResult(res.locals);
-  let resCode = 200;
   const updateSql = `UPDATE user SET password = ? WHERE id = ?`
   try {
     const updateData = await mySqlOperate.query(updateSql, paramList)
     if (!updateData.affectedRows) {
-      result.isOk = false;
+      result.code = 0;
       result.message = 'Update user failed.';
     }
   } catch (error) {
-    resCode = 400;
+    result.status = 400;
     result.error = error
     result.message = 'Update user error.'
   }
