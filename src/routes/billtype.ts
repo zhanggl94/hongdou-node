@@ -4,7 +4,7 @@
  * @Autor: zhanggl
  * @Date: 2021-07-16 14:12:09
  * @LastEditors: zhanggl
- * @LastEditTime: 2021-07-26 16:15:57
+ * @LastEditTime: 2021-07-27 16:10:05
  */
 import express, { Request, Response } from 'express'
 import mySqlOperate from '../db/mysqlOperate';
@@ -51,7 +51,7 @@ const getOne = async (result: ResponResult, id: string) => {
 
 // 翻页查询
 const getPageList = async (result: ResponResult, pageIndex: number, pageSize: number) => {
-    let sql = `SELECT COUNT(id) AS COUNT FROM billtype; SELECT * FROM billtype ORDER BY sort LIMIT ?,?`;
+    let sql = `SELECT COUNT(id) AS count FROM billtype; SELECT * FROM billtype ORDER BY sort LIMIT ?,?`;
     const paramList: Array<number> = [(pageIndex - 1) * pageSize, pageSize];
     try {
         const data = await mySqlOperate.query(sql, paramList);
