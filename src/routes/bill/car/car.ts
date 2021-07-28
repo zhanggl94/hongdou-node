@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
-import mySqlOperate from '../db/mysqlOperate';
-import ResponseResult from '../module/ResponResult';
-import { getQueryObject, getSplicedSQL } from '../utils/util';
+import mySqlOperate from '../../../db/mysqlOperate';
+import ResponseResult from '../../../module/ResponResult';
+import { getQueryObject, getSplicedSQL } from '../../../utils/util';
 
 const router = express.Router();
 
@@ -34,7 +34,7 @@ router.post('/create', async (req: Request, res: Response) => {
 /**
  * 查询汽车信息
  */
-router.post('/search', async (req: Request, res: Response) => {
+router.get('/select', async (req: Request, res: Response) => {
     const result = new ResponseResult(res.locals);
     const queryObject = getQueryObject(req.body);
 
@@ -57,7 +57,7 @@ router.post('/search', async (req: Request, res: Response) => {
 /**
  * 更新汽车信息
  */
-router.post('/edit', async (req: Request, res: Response) => {
+router.put('/edit', async (req: Request, res: Response) => {
     const result = new ResponseResult(res.locals);
     const sql = `UPDATE car SET name = ?, brand = ?, isDefault = ?, note = ? WHERE id = ? AND userId = ?`;
     const body = req.body;
@@ -95,7 +95,7 @@ const setIsDefault = async (userId: string) => {
 /**
  * 删除汽车信息
  */
-router.post('/delete', async (req: Request, res: Response) => {
+router.delete('/delete', async (req: Request, res: Response) => {
     const sql = `DELETE FROM car WHERE id=?`;
     const paramList = [req.body.id];
     const result = new ResponseResult(res.locals);
