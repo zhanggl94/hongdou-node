@@ -4,12 +4,12 @@
  * @Autor: zhanggl
  * @Date: 2021-07-16 14:12:09
  * @LastEditors: zhanggl
- * @LastEditTime: 2021-07-27 16:10:05
+ * @LastEditTime: 2021-07-28 10:59:54
  */
 import express, { Request, Response } from 'express'
-import mySqlOperate from '../db/mysqlOperate';
-import ResponResult from '../module/ResponResult';
-import Billtype from '../module/Billtype';
+import mySqlOperate from '../..//db/mysqlOperate';
+import ResponResult from '../../module/ResponResult';
+import BillType from '../../module/bill/BillType';
 
 const router = express.Router();
 
@@ -99,7 +99,7 @@ router.post('/create', async (req: Request, res: Response) => {
 // 编辑
 router.put('/edit', async (req: Request, res: Response) => {
     const result = new ResponResult(res.locals);
-    const billType = req.body as Billtype;
+    const billType = req.body as BillType;
     try {
         const sql: string = `UPDATE billtype SET type = ?, sort = ?, note = ? WHERE id = ?`;
         const paramList: Array<any> = [billType.type, billType.sort, billType.note, billType.id]
