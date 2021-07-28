@@ -4,7 +4,7 @@
  * @Autor: zhanggl
  * @Date: 2021-07-28 10:51:37
  * @LastEditors: zhanggl
- * @LastEditTime: 2021-07-28 10:51:53
+ * @LastEditTime: 2021-07-28 11:09:06
  */
 import express, { Request, Response } from 'express'
 import mySqlOperate from '../../db/mysqlOperate';
@@ -32,26 +32,23 @@ router.get('/select', async (req: Request, res: Response) => {
 
 // 根据id，查询单条
 const getOne = async (result: ResponResult, id: string) => {
-    let sql = `SELECT * FROM billtype WHERE id = ? ORDER BY sort`;
+    let sql = `SELECT * FROM paytype WHERE id = ? ORDER BY sort`;
     const paramList: Array<string> = [id];
     try {
         const data = await mySqlOperate.query(sql, paramList);
         if (data.length) {
-            result.data = {
-                total: 1,
-                list: data
-            };
+            result.data = data[0];
         }
     } catch (error) {
         result.error = error;
         result.status = 400;
-        result.message = 'Select billtype failed.';
+        result.message = 'Select paytype failed.';
     }
 }
 
 // 翻页查询
 const getPageList = async (result: ResponResult, pageIndex: number, pageSize: number) => {
-    let sql = `SELECT COUNT(id) AS count FROM billtype; SELECT * FROM billtype ORDER BY sort LIMIT ?,?`;
+    let sql = `SELECT COUNT(id) AS count FROM paytype; SELECT * FROM paytype ORDER BY sort LIMIT ?,?`;
     const paramList: Array<number> = [(pageIndex - 1) * pageSize, pageSize];
     try {
         const data = await mySqlOperate.query(sql, paramList);
@@ -64,7 +61,7 @@ const getPageList = async (result: ResponResult, pageIndex: number, pageSize: nu
     } catch (error) {
         result.error = error;
         result.status = 400;
-        result.message = 'Select billtype failed.';
+        result.message = 'Select paytype failed.';
     }
 }
 
@@ -75,7 +72,7 @@ router.post('/create', async (req: Request, res: Response) => {
     try {
         const maxSort = await getMaxSort(result);
         if (result.code) {
-            const sql: string = `INSERT INTO billtype (id,type,sort,note) VALUES (?,?,?,?)`;
+            const sql: string = `INSERT INTO paytype (id,type,sort,note) VALUES (?,?,?,?)`;
             const paramList = [null, type, maxSort + 1, note];
             const data: any = await mySqlOperate.query(sql, paramList);
             if (!data.affectedRows) {
@@ -90,7 +87,7 @@ router.post('/create', async (req: Request, res: Response) => {
         result.status = 400;
         result.code = 0;
         result.error = error;
-        result.message = 'Create billtype failed.';
+        result.message = 'Create paytype failed.';
     } finally {
         res.status(result.status).send(result);
     }
@@ -99,17 +96,17 @@ router.post('/create', async (req: Request, res: Response) => {
 // 编辑
 router.put('/edit', async (req: Request, res: Response) => {
     const result = new ResponResult(res.locals);
-    const billType = req.body as PayType;
+    const payType = req.body as PayType;
     try {
-        const sql: string = `UPDATE billtype SET type = ?, sort = ?, note = ? WHERE id = ?`;
-        const paramList: Array<any> = [billType.type, billType.sort, billType.note, billType.id]
+        const sql: string = `UPDATE paytype SET type = ?, sort = ?, note = ? WHERE id = ?`;
+        const paramList: Array<any> = [payType.type, payType.sort, payType.note, payType.id]
         const data = await mySqlOperate.query(sql, paramList);
         if (!data.affectedRows) {
             result.status = 400;
             result.code = 0;
             result.message = 'Update bill type failed.';
         }
-        result.data = billType;
+        result.data = payType;
     } catch (error) {
         result.status = 400;
         result.code = 0;
@@ -127,7 +124,7 @@ router.delete('/delete', async (req: Request, res: Response) => {
     try {
         if (idList.length) {
             let ids = idList.toString();
-            let sql: string = `DELETE FROM billtype WHERE id IN (`;
+            let sql: string = `DELETE FROM paytype WHERE id IN (`;
             for (let i = 0; i < idList.length; i++) {
                 if (i === 0) {
                     sql += '?';
@@ -163,7 +160,7 @@ router.delete('/delete', async (req: Request, res: Response) => {
 // 获取排序的最大序号
 const getMaxSort = async (result: ResponResult) => {
     let sort = null;
-    const sql = `SELECT MAX(sort) AS maxsort FROM billtype`;
+    const sql = `SELECT MAX(sort) AS maxsort FROM paytype`;
     try {
         const data = await mySqlOperate.query(sql, []);
         if (data.length) {

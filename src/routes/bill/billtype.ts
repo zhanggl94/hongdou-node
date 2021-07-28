@@ -4,7 +4,7 @@
  * @Autor: zhanggl
  * @Date: 2021-07-16 14:12:09
  * @LastEditors: zhanggl
- * @LastEditTime: 2021-07-28 10:59:54
+ * @LastEditTime: 2021-07-28 11:06:48
  */
 import express, { Request, Response } from 'express'
 import mySqlOperate from '../..//db/mysqlOperate';
@@ -37,10 +37,7 @@ const getOne = async (result: ResponResult, id: string) => {
     try {
         const data = await mySqlOperate.query(sql, paramList);
         if (data.length) {
-            result.data = {
-                total: 1,
-                list: data
-            };
+            result.data = data[0];
         }
     } catch (error) {
         result.error = error;
