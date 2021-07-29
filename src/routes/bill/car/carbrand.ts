@@ -4,7 +4,7 @@
  * @Autor: zhanggl
  * @Date: 2021-07-28 15:58:14
  * @LastEditors: zhanggl
- * @LastEditTime: 2021-07-28 17:30:49
+ * @LastEditTime: 2021-07-29 17:20:54
  */
 
 import express, { Request, Response } from 'express'
@@ -98,20 +98,20 @@ router.put('/edit', async (req: Request, res: Response) => {
     const result = new ResponResult(res.locals);
     const carBrand = req.body as CarBrand;
     try {
-        const sql: string = `UPDATE carbrand SET brand = ? note = ? WHERE id = ?`;
+        const sql: string = `UPDATE carbrand SET brand = ?, note = ? WHERE id = ?`;
         const paramList: Array<any> = [carBrand.brand, carBrand.note, carBrand.id]
         const data = await mySqlOperate.query(sql, paramList);
         if (!data.affectedRows) {
             result.status = 400;
             result.code = 0;
-            result.message = 'Update bill type failed.';
+            result.message = 'Update carbrand type failed.';
         }
         result.data = carBrand;
     } catch (error) {
         result.status = 400;
         result.code = 0;
         result.error = error;
-        result.message = 'Update bill type failed.';
+        result.message = 'Update carbrand type failed.';
     } finally {
         res.status(result.status).send(result);
     }
@@ -140,7 +140,7 @@ router.delete('/delete', async (req: Request, res: Response) => {
             if (!data.affectedRows) {
                 result.status = 400;
                 result.code = 0;
-                result.message = 'Delete bill type failed.';
+                result.message = 'Delete carbrand type failed.';
             }
         } else {
             result.status = 400;
@@ -151,7 +151,7 @@ router.delete('/delete', async (req: Request, res: Response) => {
         result.status = 400;
         result.code = 0;
         result.error = error;
-        result.message = 'Delete bill type failed.';
+        result.message = 'Delete carbrand type failed.';
     } finally {
         res.status(result.status).send(result);
     }

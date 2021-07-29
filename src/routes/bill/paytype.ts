@@ -104,14 +104,14 @@ router.put('/edit', async (req: Request, res: Response) => {
         if (!data.affectedRows) {
             result.status = 400;
             result.code = 0;
-            result.message = 'Update bill type failed.';
+            result.message = 'Update paytype type failed.';
         }
         result.data = payType;
     } catch (error) {
         result.status = 400;
         result.code = 0;
         result.error = error;
-        result.message = 'Update bill type failed.';
+        result.message = 'Update paytype type failed.';
     } finally {
         res.status(result.status).send(result);
     }
@@ -140,7 +140,7 @@ router.delete('/delete', async (req: Request, res: Response) => {
             if (!data.affectedRows) {
                 result.status = 400;
                 result.code = 0;
-                result.message = 'Delete bill type failed.';
+                result.message = 'Delete paytype type failed.';
             }
         } else {
             result.status = 400;
@@ -151,7 +151,7 @@ router.delete('/delete', async (req: Request, res: Response) => {
         result.status = 400;
         result.code = 0;
         result.error = error;
-        result.message = 'Delete bill type failed.';
+        result.message = 'Delete paytype type failed.';
     } finally {
         res.status(result.status).send(result);
     }
