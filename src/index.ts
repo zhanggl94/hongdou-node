@@ -4,7 +4,7 @@
  * @Autor: zhanggl
  * @Date: 2021-07-08 11:27:45
  * @LastEditors: zhanggl
- * @LastEditTime: 2021-07-28 16:56:37
+ * @LastEditTime: 2021-08-17 17:59:08
  */
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -26,7 +26,7 @@ app.use(auth);
 app.use('/api', signupRouter);
 app.use('/api', signinRouter);
 app.use('/api/user', userRouter);
-app.use('/api/car/car', carRouter);
+app.use('/api/car', carRouter);
 app.use('/api/bill', billRouter);
 app.use('/api/billtype', billTypeRouter);
 app.use('/api/paytype', payTypeRouter);
