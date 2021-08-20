@@ -1,3 +1,11 @@
+/*
+ * @Description: 
+ * @Version: 2.0
+ * @Autor: zhanggl
+ * @Date: 2021-07-08 11:27:45
+ * @LastEditors: zhanggl
+ * @LastEditTime: 2021-08-20 17:31:26
+ */
 export const formatDateHour24 = (date: Date, timeZone: string): string => date.toLocaleString(timeZone, { hour12: false });
 
 /**

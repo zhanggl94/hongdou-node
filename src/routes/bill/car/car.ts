@@ -42,7 +42,7 @@ router.get('/select', async (req: Request, res: Response) => {
     try {
         const { id, userId, pageIndex, pageSize } = req.query;
         if (id && userId) {
-
+            result = await getOneCar(res, [Number(id), Number(userId)])
         } else if (pageIndex && pageSize && userId) {
             const paramList = [parseInt(userId.toString()), parseInt(userId.toString()), (parseInt(pageIndex.toString()) - 1) * parseInt(pageSize.toString()), parseInt(pageSize.toString())]
             result = await getCarList(res, paramList)
@@ -66,12 +66,12 @@ router.get('/select', async (req: Request, res: Response) => {
  */
 router.put('/edit', async (req: Request, res: Response) => {
     const result = new ResponseResult(res.locals);
+    const car: Car = req.body as Car;
+    const paramList = [car.name, car.brand.id, car.isDefault, car.note, car.id, car.userId];
     const sql = `UPDATE car SET name = ?, brandId = ?, isDefault = ?, note = ? WHERE id = ? AND userId = ?`;
-    const body = req.body;
-    const paramList = [body.name, body.brandId, body.isDefault, body.note, body.id, body.userId];
     try {
-        if (body.isDefault === 1) { // 当设置为默认值时，清除其他汽车的默认选项(默认汽车只有一辆)
-            await setIsDefault(body.userId);
+        if (Number(car.isDefault) === 1) { // 当设置为默认值时，清除其他汽车的默认选项(默认汽车只有一辆)
+            await setIsDefault(car.userId);
         }
         const data: any = await mySqlOperate.query(sql, paramList);
         let responseCode = 200;
@@ -129,15 +129,57 @@ router.delete('/delete', async (req: Request, res: Response) => {
  */
 const getCarList = async (res: Response, paramList: Array<number>): Promise<ResponseResult> => {
     const result = new ResponseResult(res.locals);
-    let sql = `SELECT COUNT(id) AS count FROM car WHERE userId = ?; SELECT c.*, b.brand FROM car c left join carbrand b ON c.brandId = b.id WHERE userId = ? ORDER BY name LIMIT ?,?`
+    let sql = `SELECT COUNT(id) AS count FROM car WHERE userId = ?;
+            SELECT c.id, c.name, c.isDefault, c.note, c.userId, c.brandId, b.brand, b.note AS bnote  FROM
+            car c left join carbrand b ON c.brandId = b.id WHERE userId = ? ORDER BY c.name`
     try {
         const data: any = await mySqlOperate.query(sql, paramList);
         if (data.length) {
+            const carList = data[1].reduce((acc: Array<any>, curr: any) => {
+                const carInfo: Car = new Car();
+                carInfo.id = curr.id
+                carInfo.name = curr.name
+                carInfo.isDefault = curr.isDefault
+                carInfo.note = curr.note
+                carInfo.brand.id = curr.brandId
+                carInfo.brand.brand = curr.brand
+                carInfo.brand.note = curr.bnote
+                acc.push(carInfo)
+                return acc;
+            }, [])
             result.data = {
                 total: data[0][0].count,
-                list: data[1],
+                list: carList,
             };
-            console.log('data[1]:', data[1])
+        }
+    } catch (error) {
+        result.code = 0;
+        result.message = 'There has some system error.';
+        result.error = error;
+        result.status = 400;
+    }
+    return result;
+}
+
+const getOneCar = async (res: Response, paramList: Array<number>): Promise<ResponseResult> => {
+    const result = new ResponseResult(res.locals);
+    let sql = `SELECT c.id, c.name, c.isDefault, c.note, c.userId, c.brandId, b.brand, b.note AS bnote  FROM
+            car c left join carbrand b ON c.brandId = b.id WHERE c.id = ? AND userId = ?`
+    try {
+        const data: any = await mySqlOperate.query(sql, paramList);
+        if (data.length) {
+            console.log('data', data)
+            result.data = {
+                id: data[0].id,
+                name: data[0].name,
+                isDefault: data[0].isDefault,
+                note: data[0].note,
+                brand: {
+                    id: data[0].brandId,
+                    name: data[0].brand,
+                    note: data[0].bnote
+                }
+            };
         }
     } catch (error) {
         result.code = 0;
