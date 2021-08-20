@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { parse } from 'ts-node';
 import mySqlOperate from '../../../db/mysqlOperate';
+import Car from '../../../module/bill/car/car';
 import ResponseResult from '../../../module/ResponResult';
 import { getQueryObject, getSplicedSQL } from '../../../utils/util';
 
@@ -12,11 +13,12 @@ const router = express.Router();
 router.post('/create', async (req: Request, res: Response) => {
     const result = new ResponseResult(res.locals);
     const sql = `INSERT INTO car (name,brandId,isDefault,note, userId) VALUES (?,?,?,?,?)`;
-    const paramList = [req.body.name, req.body.brandId, req.body.isDefault, req.body.note, req.body.userId];
+    const car: Car = req.body as Car;
     try {
-        if (req.body.isDefault === 1) {
-            await setIsDefault(req.body.userId);
+        if (Number(car.isDefault) === 1) {
+            await setIsDefault(car.userId);
         }
+        const paramList: Array<any> = [car.name, car.brand.id, car.isDefault, car.note, car.userId]
         const data: any = await mySqlOperate.query(sql, paramList);
         if (!data.affectedRows) {
             result.code = 0;
@@ -42,7 +44,8 @@ router.get('/select', async (req: Request, res: Response) => {
         if (id && userId) {
 
         } else if (pageIndex && pageSize && userId) {
-            result = await getCarList(res, [parseInt(userId.toString()), (parseInt(pageSize.toString()) - 1) * parseInt(pageSize.toString()), parseInt(pageSize.toString())])
+            const paramList = [parseInt(userId.toString()), parseInt(userId.toString()), (parseInt(pageIndex.toString()) - 1) * parseInt(pageSize.toString()), parseInt(pageSize.toString())]
+            result = await getCarList(res, paramList)
         } else {
             result.code = 0;
             result.status = 405;
@@ -90,7 +93,7 @@ router.put('/edit', async (req: Request, res: Response) => {
  * @param mysql 
  * @param userId 
  */
-const setIsDefault = async (userId: string) => {
+const setIsDefault = async (userId: number) => {
     const sql = `UPDATE car SET isDefault = 0 WHERE userId = ? AND isDefault = 1`;
     const paramList = [userId];
     await mySqlOperate.query(sql, paramList);
@@ -126,7 +129,7 @@ router.delete('/delete', async (req: Request, res: Response) => {
  */
 const getCarList = async (res: Response, paramList: Array<number>): Promise<ResponseResult> => {
     const result = new ResponseResult(res.locals);
-    let sql = `SELECT COUNT(id) AS count FROM car; SELECT c.*, b.brand FROM car c left join carbrand b ON c.brandId = b.id WHERE userId = ? ORDER BY name LIMIT ?,?`
+    let sql = `SELECT COUNT(id) AS count FROM car WHERE userId = ?; SELECT c.*, b.brand FROM car c left join carbrand b ON c.brandId = b.id WHERE userId = ? ORDER BY name LIMIT ?,?`
     try {
         const data: any = await mySqlOperate.query(sql, paramList);
         if (data.length) {
@@ -134,6 +137,7 @@ const getCarList = async (res: Response, paramList: Array<number>): Promise<Resp
                 total: data[0][0].count,
                 list: data[1],
             };
+            console.log('data[1]:', data[1])
         }
     } catch (error) {
         result.code = 0;

@@ -12,6 +12,8 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\src\\index.ts",
+            // "runtimeExecutable": "D:/Program Files/nodejs/node",
+            "console": "integratedTerminal",
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
             ]
