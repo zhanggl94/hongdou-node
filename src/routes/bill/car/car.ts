@@ -41,7 +41,9 @@ router.get('/select', async (req: Request, res: Response) => {
     let result = new ResponseResult(res.locals);
     try {
         const { id, userId, pageIndex, pageSize } = req.query;
-        if (id && userId) {
+        if (!id && !pageIndex && !pageSize && userId) {
+            result = await getUserDefaultCar(res, Number(userId))
+        } else if (id && userId) {
             result = await getOneCar(res, Number(id), Number(userId))
         } else if (pageIndex && pageSize && userId) {
             const paramList = [parseInt(userId.toString()), parseInt(userId.toString()), (parseInt(pageIndex.toString()) - 1) * parseInt(pageSize.toString()), parseInt(pageSize.toString())]
@@ -161,6 +163,13 @@ const getCarList = async (res: Response, paramList: Array<number>): Promise<Resp
     return result;
 }
 
+/**
+ * 获取一辆汽车信息
+ * @param res 
+ * @param carId 
+ * @param userId 
+ * @returns 
+ */
 const getOneCar = async (res: Response, carId: Number, userId: Number): Promise<ResponseResult> => {
     const result = new ResponseResult(res.locals);
     let sql = `SELECT c.id, c.name, c.isDefault, c.note, c.userId, c.brandId, b.brand, b.note AS bnote  FROM
@@ -169,7 +178,43 @@ const getOneCar = async (res: Response, carId: Number, userId: Number): Promise<
         const paramList = [carId, userId]
         const data: any = await mySqlOperate.query(sql, paramList);
         if (data.length) {
-            console.log('data', data)
+            result.data = {
+                id: data[0].id,
+                name: data[0].name,
+                isDefault: data[0].isDefault,
+                note: data[0].note,
+                userId: userId,
+                brand: {
+                    id: data[0].brandId,
+                    brand: data[0].brand,
+                    note: data[0].bnote
+                }
+            };
+        }
+    } catch (error) {
+        result.code = 0;
+        result.message = 'There has some system error.';
+        result.error = error;
+        result.status = 400;
+    }
+    return result;
+}
+
+/**
+ * 获取用户的默认汽车信息
+ * @param res 
+ * @param carId 
+ * @param userId 
+ * @returns 
+ */
+const getUserDefaultCar = async (res: Response, userId: Number): Promise<ResponseResult> => {
+    const result = new ResponseResult(res.locals);
+    let sql = `SELECT c.id, c.name, c.isDefault, c.note, c.userId, c.brandId, b.brand, b.note AS bnote  FROM
+            car c left join carbrand b ON c.brandId = b.id WHERE userId = ? AND c.isDefuault = 1`
+    try {
+        const paramList = [userId]
+        const data: any = await mySqlOperate.query(sql, paramList);
+        if (data.length) {
             result.data = {
                 id: data[0].id,
                 name: data[0].name,
