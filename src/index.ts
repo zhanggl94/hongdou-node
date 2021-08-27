@@ -4,10 +4,11 @@
  * @Autor: zhanggl
  * @Date: 2021-07-08 11:27:45
  * @LastEditors: zhanggl
- * @LastEditTime: 2021-08-17 17:59:08
+ * @LastEditTime: 2021-08-27 16:12:26
  */
 import express from 'express';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 import auth from './routes/auth';
 import signupRouter from './routes/signup';
 import signinRouter from './routes/signin';
@@ -19,6 +20,9 @@ import payTypeRouter from './routes/bill/paytype';
 import carBrandRouter from './routes/bill/car/carbrand';
 
 const app = express();
+app.use(cors({
+    origin: 'http://localhost:8080',
+}))
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
