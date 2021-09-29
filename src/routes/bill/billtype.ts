@@ -39,7 +39,7 @@ const getOne = async (result: ResponResult, id: string) => {
         if (data.length) {
             result.data = data[0];
         }
-    } catch (error) {
+    } catch (error: any) {
         result.error = error;
         result.status = 400;
         result.message = 'Select billtype failed.';
@@ -58,7 +58,7 @@ const getPageList = async (result: ResponResult, pageIndex: number, pageSize: nu
                 list: data[1]
             };
         }
-    } catch (error) {
+    } catch (error: any) {
         result.error = error;
         result.status = 400;
         result.message = 'Select billtype failed.';
@@ -83,7 +83,7 @@ router.post('/create', async (req: Request, res: Response) => {
         } else {
             result.status = 400;
         }
-    } catch (error) {
+    } catch (error: any) {
         result.status = 400;
         result.code = 0;
         result.error = error;
@@ -107,7 +107,7 @@ router.put('/edit', async (req: Request, res: Response) => {
             result.message = 'Update bill type failed.';
         }
         result.data = billType;
-    } catch (error) {
+    } catch (error: any) {
         result.status = 400;
         result.code = 0;
         result.error = error;
@@ -140,14 +140,14 @@ router.delete('/delete', async (req: Request, res: Response) => {
             if (!data.affectedRows) {
                 result.status = 400;
                 result.code = 0;
-                result.message = 'Delete bill type failed.';
+                result.message = 'Delete bill type failed..';
             }
         } else {
             result.status = 400;
             result.code = 0;
             result.message = 'There is no id to delete.';
         }
-    } catch (error) {
+    } catch (error: any) {
         result.status = 400;
         result.code = 0;
         result.error = error;
@@ -167,7 +167,7 @@ const getMaxSort = async (result: ResponResult) => {
             sort = data[0].maxsort ? data[0].maxsort : 0;
         }
         result.code = 1;
-    } catch (error) {
+    } catch (error: any) {
         result.code = 0;
         result.error = error;
         result.status = 400;
