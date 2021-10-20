@@ -1,11 +1,3 @@
-/*
- * @Description: 
- * @Version: 2.0
- * @Autor: zhanggl
- * @Date: 2021-07-28 10:51:37
- * @LastEditors: zhanggl
- * @LastEditTime: 2021-07-28 11:09:06
- */
 import express, { Request, Response } from 'express'
 import mySqlOperate from '../../db/mysqlOperate';
 import ResponResult from '../../module/ResponResult';
@@ -29,7 +21,6 @@ router.get('/select', async (req: Request, res: Response) => {
     res.status(result.status).send(result);
 })
 
-
 // 根据id，查询单条
 const getOne = async (result: ResponResult, id: string) => {
     let sql = `SELECT * FROM paytype WHERE id = ? ORDER BY sort`;
@@ -39,7 +30,7 @@ const getOne = async (result: ResponResult, id: string) => {
         if (data.length) {
             result.data = data[0];
         }
-    } catch (error) {
+    } catch (error: any) {
         result.error = error;
         result.status = 400;
         result.message = 'Select paytype failed.';
@@ -58,7 +49,7 @@ const getPageList = async (result: ResponResult, pageIndex: number, pageSize: nu
                 list: data[1]
             };
         }
-    } catch (error) {
+    } catch (error: any) {
         result.error = error;
         result.status = 400;
         result.message = 'Select paytype failed.';
@@ -83,7 +74,7 @@ router.post('/create', async (req: Request, res: Response) => {
         } else {
             result.status = 400;
         }
-    } catch (error) {
+    } catch (error: any) {
         result.status = 400;
         result.code = 0;
         result.error = error;
@@ -107,7 +98,7 @@ router.put('/edit', async (req: Request, res: Response) => {
             result.message = 'Update paytype type failed.';
         }
         result.data = payType;
-    } catch (error) {
+    } catch (error: any) {
         result.status = 400;
         result.code = 0;
         result.error = error;
@@ -147,7 +138,7 @@ router.delete('/delete', async (req: Request, res: Response) => {
             result.code = 0;
             result.message = 'There is no id to delete.';
         }
-    } catch (error) {
+    } catch (error: any) {
         result.status = 400;
         result.code = 0;
         result.error = error;
@@ -167,7 +158,7 @@ const getMaxSort = async (result: ResponResult) => {
             sort = data[0].maxsort ? data[0].maxsort : 0;
         }
         result.code = 1;
-    } catch (error) {
+    } catch (error: any) {
         result.code = 0;
         result.error = error;
         result.status = 400;

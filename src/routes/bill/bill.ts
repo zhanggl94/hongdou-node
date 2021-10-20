@@ -23,7 +23,7 @@ router.post('/create', async (req: Request, res: Response) => {
             result.code = 0;
             result.message = 'Create bill failed.';
         }
-    } catch (error) {
+    } catch (error: any) {
         result.status = 400;
         result.code = 0;
         result.error = error;
@@ -45,7 +45,7 @@ router.post('/search', async (req: Request, res: Response) => {
             result.data = data;
         }
         res.status(result.status).send(result);
-    } catch (error) {
+    } catch (error: any) {
         result.code = 0;
         result.error = error;
         result.message = 'There has some system error.';
@@ -70,7 +70,7 @@ router.post('/edit', async (req: Request, res: Response) => {
             result.code = 0;
             result.message = 'Update bill failed.';
         }
-    } catch (error) {
+    } catch (error: any) {
         result.status = 400;
         result.code = 0;
         result.error = error;
@@ -94,7 +94,7 @@ router.post('/delete', async (req: Request, res: Response) => {
             result.code = 0;
             result.message = 'Delete bill failed.';
         }
-    } catch (error) {
+    } catch (error: any) {
         result.status = 400;
         result.code = 0;
         result.error = error;
@@ -126,7 +126,7 @@ router.post('/import', async (req: Request, res: Response) => {
                         const newCarData = await insertCar([carName, 9999, 0, 'Excle import', currUserId]);
                         car['id'] = newCarData.insertId;
                     }
-                } catch (error) {
+                } catch (error: any) {
                     result.code = 0;
                     result.message = 'There has some system errors.';
                     result.error = error;
@@ -156,7 +156,7 @@ router.post('/import', async (req: Request, res: Response) => {
                     result.code = 0;
                     result.message = 'Insert bill info failed.';
                 }
-            } catch (error) {
+            } catch (error: any) {
                 result.code = 0;
                 result.message = 'There has some system errors.';
                 result.error = error;
@@ -193,7 +193,7 @@ const checkCarName = async (paramList: Array<string>): Promise<any> => {
     return new Promise(async (resolve: any, reject: any) => {
         try {
             resolve(await mySqlOperate.query(sql, paramList));
-        } catch (error) {
+        } catch (error: any) {
             reject(error);
         }
     })
@@ -209,7 +209,7 @@ const insertCar = async (paramList: Array<string>): Promise<any> => {
     return new Promise(async (resolve: any, reject: any) => {
         try {
             resolve(await mySqlOperate.query(sql, paramList));
-        } catch (error) {
+        } catch (error: any) {
             reject(error);
         }
     })

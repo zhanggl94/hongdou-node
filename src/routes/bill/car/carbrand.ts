@@ -40,7 +40,7 @@ const getOne = async (result: ResponResult, id: string) => {
         if (data.length) {
             result.data = data[0];
         }
-    } catch (error) {
+    } catch (error: any) {
         result.error = error;
         result.status = 400;
         result.message = 'Select carbrand failed.';
@@ -59,7 +59,7 @@ const getPageList = async (result: ResponResult, pageIndex: number, pageSize: nu
                 list: data[1]
             };
         }
-    } catch (error) {
+    } catch (error: any) {
         result.error = error;
         result.status = 400;
         result.message = 'Select carbrand failed.';
@@ -83,7 +83,7 @@ router.post('/create', async (req: Request, res: Response) => {
         } else {
             result.status = 400;
         }
-    } catch (error) {
+    } catch (error: any) {
         result.status = 400;
         result.code = 0;
         result.error = error;
@@ -107,7 +107,7 @@ router.put('/edit', async (req: Request, res: Response) => {
             result.message = 'Update carbrand type failed.';
         }
         result.data = carBrand;
-    } catch (error) {
+    } catch (error: any) {
         result.status = 400;
         result.code = 0;
         result.error = error;
@@ -147,7 +147,7 @@ router.delete('/delete', async (req: Request, res: Response) => {
             result.code = 0;
             result.message = 'There is no id to delete.';
         }
-    } catch (error) {
+    } catch (error: any) {
         result.status = 400;
         result.code = 0;
         result.error = error;

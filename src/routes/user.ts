@@ -37,7 +37,7 @@ router.put('/edit', async (req: Request, res: Response) => {
         result.message = '原密码不正确';
       }
     }
-  } catch (error) {
+  } catch (error: any) {
     result.status = 400;
     result.code = 0;
     result.error = error;
@@ -57,7 +57,7 @@ const editUser = async (res: Response, paramList: Array<string>) => {
       result.code = 0;
       result.message = 'Update user failed.';
     }
-  } catch (error) {
+  } catch (error: any) {
     result.status = 400;
     result.error = error
     result.message = 'Update user error.'

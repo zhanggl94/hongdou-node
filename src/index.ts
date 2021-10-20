@@ -1,13 +1,4 @@
-/*
- * @Description: 
- * @Version: 2.0
- * @Autor: zhanggl
- * @Date: 2021-07-08 11:27:45
- * @LastEditors: zhanggl
- * @LastEditTime: 2021-08-27 16:12:26
- */
-import express from 'express';
-import bodyParser from 'body-parser';
+import express, { RequestHandler} from 'express';
 import cors from 'cors';
 import auth from './routes/auth';
 import signupRouter from './routes/signup';
@@ -23,8 +14,9 @@ const app = express();
 app.use(cors({
     origin: ['http://localhost:8080', 'http://localhost:3000'],
 }))
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+
+app.use(express.urlencoded({ extended: true }) as RequestHandler);
+app.use(express.json() as RequestHandler);
 
 app.use(auth);
 app.use('/api', signupRouter);

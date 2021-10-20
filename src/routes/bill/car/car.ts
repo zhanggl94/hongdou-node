@@ -26,7 +26,7 @@ router.post('/create', async (req: Request, res: Response) => {
             result.status = 400;
         }
         res.status(result.status).send(result);
-    } catch (error) {
+    } catch (error: any) {
         result.code = 0;
         result.error = error;
         result.message = 'There is some system errors.';
@@ -54,7 +54,7 @@ router.get('/select', async (req: Request, res: Response) => {
             result.message = 'The parameter is incorrect.';
         }
         res.status(result.status).send(result);
-    } catch (error) {
+    } catch (error: any) {
         result.code = 0;
         result.message = 'There has some system error.';
         result.error = error;
@@ -83,7 +83,7 @@ router.put('/edit', async (req: Request, res: Response) => {
             responseCode = 400;
         }
         res.status(responseCode).send(result);
-    } catch (error) {
+    } catch (error: any) {
         result.code = 0;
         result.error = error;
         result.message = 'There has some system error.';
@@ -116,7 +116,7 @@ router.delete('/delete', async (req: Request, res: Response) => {
             result.status = 400;
         }
         res.status(result.status).send(result);
-    } catch (error) {
+    } catch (error: any) {
         result.code = 0;
         result.error = error;
         result.message = 'There has some system erro.';
@@ -154,7 +154,7 @@ const getCarList = async (res: Response, paramList: Array<number>): Promise<Resp
                 list: carList,
             };
         }
-    } catch (error) {
+    } catch (error: any) {
         result.code = 0;
         result.message = 'There has some system error.';
         result.error = error;
@@ -191,7 +191,7 @@ const getOneCar = async (res: Response, carId: Number, userId: Number): Promise<
                 }
             };
         }
-    } catch (error) {
+    } catch (error: any) {
         result.code = 0;
         result.message = 'There has some system error.';
         result.error = error;
@@ -228,7 +228,7 @@ const getUserDefaultCar = async (res: Response, userId: Number): Promise<Respons
                 }
             };
         }
-    } catch (error) {
+    } catch (error: any) {
         result.code = 0;
         result.message = 'There has some system error.';
         result.error = error;
