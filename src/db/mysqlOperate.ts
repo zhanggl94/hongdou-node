@@ -8,13 +8,15 @@
  */
 import mysql from 'mysql';
 import mysqlConfig from '../config/mysql';
+import constants from '../utils/constants';
+import { formatDateHour24 } from '../utils/util';
 
 const mySqlOperate: any = {};
 const pool = mysql.createPool(mysqlConfig);
 
 //使用mysql的连接池功能
 mySqlOperate.query = (sql: string, paramList: Array<any>): Promise<any> => {
-    console.log(`sql: ${sql}, paramList: ${paramList}`); //查看执行的SQL语句
+    console.log(`${formatDateHour24(new Date(), constants.time_zone_zh_cn)} -- sql: ${sql}, paramList: ${paramList}`); //查看执行的SQL语句
     return new Promise((resolve, reject) => {
         pool.getConnection((err, connection) => {
             if (err) {

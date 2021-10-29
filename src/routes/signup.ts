@@ -1,11 +1,3 @@
-/*
- * @Description: 
- * @Version: 2.0
- * @Autor: zhanggl
- * @Date: 2021-07-08 11:27:45
- * @LastEditors: zhanggl
- * @LastEditTime: 2021-07-20 09:14:45
- */
 import express, { Request, Response } from 'express';
 import { cryPassword } from '../utils/cryptoUtil';
 import { formatDateHour24 } from '../utils/util';
@@ -66,7 +58,6 @@ const isUserExist = async (req: Request) => {
   return result;
 }
 
-
 /**
  * 创建用户
  * @param req 请求
@@ -76,7 +67,7 @@ const isUserExist = async (req: Request) => {
 const createUser = async (req: Request,) => {
   const result = new ResponResult(notRefreshToken);
   const currentDateTime = formatDateHour24(new Date(), constants.time_zone_zh_cn);
-  const sql = `INSERT INTO user VALUES (null,?,?,?,?)`;
+  const sql = `INSERT INTO user (id,username,password,createtime,lastlogintime) VALUES (null,?,?,?,?)`;
   const cryPwd = cryPassword(req.body.password, currentDateTime);
   const paramList = [req.body.username, cryPwd, currentDateTime, currentDateTime];
   try {

@@ -1,4 +1,4 @@
-import express, { RequestHandler} from 'express';
+import express, { RequestHandler } from 'express';
 import cors from 'cors';
 import auth from './routes/auth';
 import signupRouter from './routes/signup';
@@ -12,7 +12,7 @@ import carBrandRouter from './routes/bill/car/carbrand';
 
 const app = express();
 app.use(cors({
-    origin: ['http://localhost:8080', 'http://localhost:3000'],
+    origin: ['http://localhost:8080', 'http://localhost:8081', 'http://localhost:3000'],
 }))
 
 app.use(express.urlencoded({ extended: true }) as RequestHandler);
